@@ -316,7 +316,7 @@
 
   cmds.az = wrap(async function (a) {
     var cmd = a.join(' ');
-    if (/^account show/.test(cmd)) return print(['{', '  "name": "Platform-Production",', '  "state": "Enabled",', '  "tenantId": "' + hex(8) + '-' + hex(4) + '-' + hex(4) + '-' + hex(4) + '-' + hex(12) + '",', '  "user": { "name": "andrei@bamboi.dev", "type": "user" }', '}']);
+    if (/^account show/.test(cmd)) return print(['{', '  "name": "Platform-Production",', '  "state": "Enabled",', '  "tenantId": "' + hex(8) + '-' + hex(4) + '-' + hex(4) + '-' + hex(4) + '-' + hex(12) + '",', '  "user": { "name": "bamboi.andrei@gmail.com", "type": "user" }', '}']);
     if (/^vm list/.test(cmd)) return print(table(['Name', 'ResourceGroup', 'Location', 'PowerState'], [['vm-jumpbox-01', 'rg-platform', 'westeurope', { t: 'VM running', col: C.green }], ['vm-build-agent-01', 'rg-ci', 'westeurope', { t: 'VM running', col: C.green }], ['vm-build-agent-02', 'rg-ci', 'westeurope', { t: 'VM deallocated', col: C.muted }]]));
     if (/^aks list/.test(cmd)) return print(table(['Name', 'Location', 'K8sVersion', 'ProvisioningState'], [['aks-dr-weu', 'westeurope', '1.31.1', { t: 'Succeeded', col: C.green }], ['aks-dev-neu', 'northeurope', '1.30.5', { t: 'Succeeded', col: C.green }]]));
     print(usage(['az account show', 'az vm list -o table', 'az aks list -o table']));

@@ -10,8 +10,8 @@
     name: 'Andrei Bamboi',
     role: 'Cloud Architect & DevOps Engineer',
     location: 'Iași, Romania',
-    email: 'andrei@bamboi.dev',
-    links: { github: 'https://github.com/', linkedin: 'https://linkedin.com/' },
+    email: 'bamboi.andrei@gmail.com',
+    links: { github: 'https://github.com/andrei-bamboi', linkedin: 'https://www.linkedin.com/in/andrei-bamboi-21223278/' },
     skills: {
       'Cloud & Virtualisation': [['AWS', 90], ['Azure', 80], ['VMware', 85]],
       'Containers & Orchestration': [['Kubernetes', 90], ['Docker', 90], ['Rancher / RKE', 80]],
