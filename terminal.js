@@ -8,7 +8,7 @@
 
   var DATA = {
     name: 'Andrei Bamboi',
-    role: 'Cloud Architect & DevOps Engineer',
+    role: 'DevOps & Cloud Architect',
     location: 'Iași, Romania',
     email: 'bamboi.andrei@gmail.com',
     links: { github: 'https://github.com/andrei-bamboi', linkedin: 'https://www.linkedin.com/in/andrei-bamboi-21223278/' },
@@ -20,26 +20,42 @@
       'Systems & Scripting': [['Linux', 95], ['Bash', 85], ['Python', 70]]
     },
     projects: [
-      [1337, 'Multi-Region K8s Platform', 'DEPLOYED', 'Kubernetes, Terraform, AWS, ArgoCD, Prometheus',
-        'Multi-region Kubernetes platform serving 2M+ daily requests with 99.99% uptime. Zero-downtime deployments via GitOps.'],
-      [2048, 'Cloud Cost Optimization Engine', 'ACTIVE', 'Python, AWS Lambda, Terraform, Grafana',
-        'Automated cost analysis and rightsizing that cut cloud spend by 40% across 200+ microservices.'],
-      [4096, 'Zero-Trust Security Framework', 'DEPLOYED', 'Vault, Istio, OPA, Kubernetes, Terraform',
-        'Zero-trust network architecture with service mesh, secrets management and policy-as-code across hybrid cloud.']
+      [2111, 'AWS → Azure Migration · Financial SaaS (Visma)', 'DEPLOYED', 'AWS, Azure, Terraform, TeamCity, Octopus Deploy',
+        'Led the end-to-end migration of a mission-critical financial SaaS to Azure with minimal downtime and full compliance.'],
+      [2112, 'Azure AI Landing Zone (Visma)', 'DEPLOYED', 'Azure, Terraform, IAM, Networking, Policy',
+        'Secure, governed, scalable landing zone for AI/ML workloads with networking, IAM and compliance guardrails.'],
+      [2113, 'Self-hosted AKS GitHub Runner Platform (Visma)', 'DEPLOYED', 'AKS, GitHub Actions, Terraform',
+        'Centralized runner platform on AKS with dynamic autoscaling — faster CI/CD, better resource efficiency.'],
+      [2205, 'GPU Kubernetes for AI/ML (Dydon AI)', 'DEPLOYED', 'Kubernetes, GPU passthrough, Hetzner, Ionos',
+        'GPU-accelerated clusters for model training: passthrough, scheduling and orchestration to maximize utilization.'],
+      [2301, 'Cloudflare Edge & Zero Trust (ZeroBounce)', 'ACTIVE', 'Cloudflare Zero Trust, Tunnels, Workers, WAF',
+        'Identity-based access and tunnels instead of VPN exposure; Workers running logic at the edge.'],
+      [1808, 'BI Tool → Microservices (Endava)', 'DEPLOYED', 'Docker, Kubernetes, GitLab CI, OpenShift',
+        'Containerized a complex VM-native BI visualization tool into a microservices architecture.']
+    ],
+    jobs: [
+      ['2023-01', 'present', 'DevOps Engineer', 'ZeroBounce', 'Kubernetes, VMware, GitLab CI, Jenkins, Ansible, Cloudflare (DNS/WAF/Workers/Zero Trust), Grafana, Checkmk, Sentry'],
+      ['2022-05', '2023-01', 'Cloud Architect', 'Dydon AI', 'On-prem Kubernetes as code, GPU clusters on Ionos/Hetzner, ELK, Prometheus, GitHub Actions runners'],
+      ['2021-11', '2022-05', 'Infrastructure Engineer', 'Visma', 'AWS + Azure with Terraform, AWS→Azure migration, Azure AI Landing Zone, AKS runners, TeamCity, Octopus'],
+      ['2018-08', '2019-11', 'DevOps Engineer', 'Endava', 'GitLab CI + Kubernetes, OpenShift, Java/Spring APIs, BI tool → microservices'],
+      ['2018-03', '2018-08', 'DevOps', 'Levi9 Romania', 'Rancher/RKE, Helm, ArgoCD, GitHub Actions, Longhorn, Prometheus/Grafana'],
+      ['2016-01', '2018-03', 'System Administrator', 'Levi9 Romania', 'Servers & migrations, Cisco/MikroTik, SCOM, Backup Exec, AD DS, SCCM, 24/7 on-call'],
+      ['2013-08', '2016-01', 'IT Service Desk Analyst L2', 'SCC', 'Active Directory, Citrix, enterprise email, ITSM & SLAs']
     ]
   };
 
   var FS = {
+    'experience.log': function () { return cmds.experience(); },
     'about.txt': function () {
-      return [DATA.name + ' — ' + DATA.role, 'Location: ' + DATA.location, '10+ years · 6 companies · 5 certifications · 3 cloud providers',
-        '', 'Designing resilient infrastructure. Automating everything. Shipping at scale.'];
+      return [DATA.name + ' — ' + DATA.role, 'Location: ' + DATA.location, '13 years in IT · 8 in DevOps & IaC · 6 companies · AWS / Azure / GCP',
+        '', 'Multi-cloud platforms, Infrastructure as Code and zero-downtime delivery —', 'built by someone who started on 24/7 support and knows what breaks at 3 a.m.'];
     },
     'skills.yaml': function () { return cmds.skills(); },
     'projects.md': function () { return cmds.projects(); },
     'contact.txt': function () { return cmds.contact(); },
     '.secrets': function () { return [c('Permission denied. Nice try though. 🔒', C.red)]; }
   };
-  var SECTIONS = ['about', 'skills', 'projects', 'contact'];
+  var SECTIONS = ['about', 'skills', 'experience', 'projects', 'contact'];
 
   // ---------- helpers ----------
   function esc(s) { return String(s).replace(/[&<>"]/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]; }); }
@@ -54,7 +70,7 @@
     help: function () {
       var list = [
         ['whoami', 'who is this guy?'], ['about', 'short bio'], ['skills', 'installed modules'],
-        ['projects', 'running processes'], ['contact', 'how to reach me'], ['neofetch', 'system info'],
+        ['experience', 'career log (git log)'], ['projects', 'running processes'], ['certs', 'certifications'], ['contact', 'how to reach me'], ['neofetch', 'system info'],
         ['ls / cat <file>', 'browse the filesystem'], ['cd <section>', 'jump to a page section'],
         ['open github|linkedin|email', 'open a link'], ['kubectl get pods', 'check the cluster'],
         ['history', 'previous commands'], ['date · uptime · echo', 'the classics'],
@@ -78,10 +94,10 @@
       return out;
     },
     projects: function () {
-      var out = [c(pad('PID', 7) + pad('NAME', 34) + 'STATUS', C.muted)];
+      var out = [c(pad('PID', 7) + pad('NAME', 50) + 'STATUS', C.muted)];
       DATA.projects.forEach(function (p) {
         var col = p[2] === 'ACTIVE' ? C.green : C.blue;
-        out.push({ html: esc(pad(p[0], 7)) + '<b>' + esc(pad(p[1], 34)) + '</b><span style="color:' + col + '">' + (p[2] === 'ACTIVE' ? '● ' : '✓ ') + p[2] + '</span>' });
+        out.push({ html: esc(pad(p[0], 7)) + '<b>' + esc(pad(p[1], 50)) + '</b><span style="color:' + col + '">' + (p[2] === 'ACTIVE' ? '● ' : '✓ ') + p[2] + '</span>' });
         out.push(c('       stack: ' + p[3], C.muted));
         out.push('       ' + p[4]);
         out.push('');
@@ -98,7 +114,7 @@
     },
     neofetch: function () {
       var art = [' █████╗ ██████╗ ', '██╔══██╗██╔══██╗', '███████║██████╔╝', '██╔══██║██╔══██╗', '██║  ██║██████╔╝', '╚═╝  ╚═╝╚═════╝ ', '', ''];
-      var info = [['', 'andrei@cloud'], ['', '------------'], ['OS', 'Cloud Native'], ['Uptime', '10+ years'],
+      var info = [['', 'andrei@cloud'], ['', '------------'], ['OS', 'Cloud Native'], ['Uptime', '13+ years'],
         ['Kernel', 'Kubernetes'], ['Shell', 'Bash / Ansible'], ['CPU', 'AWS + Azure'], ['Location', DATA.location]];
       return art.map(function (a, i) {
         var r = info[i];
@@ -131,7 +147,7 @@
       if (a.join(' ') !== 'get pods') return [c('try: kubectl get pods', C.muted)];
       var pods = [['portfolio-web-7f9c8d-x2k4p', 'Running', 0], ['coffee-maker-5b6d7-q9z1m', 'Running', 3],
         ['motivation-daemon-8c2f1-h7j3k', 'Running', 0], ['legacy-monolith-1a2b3-zzzzz', 'CrashLoopBackOff', 42]];
-      return [c(pad('NAME', 34) + pad('READY', 8) + pad('STATUS', 20) + 'RESTARTS', C.muted)].concat(pods.map(function (p) {
+      return [c(pad('NAME', 50) + pad('READY', 8) + pad('STATUS', 20) + 'RESTARTS', C.muted)].concat(pods.map(function (p) {
         var col = p[1] === 'Running' ? C.green : C.red;
         return { html: esc(pad(p[0], 34)) + pad(p[1] === 'Running' ? '1/1' : '0/1', 8) + '<span style="color:' + col + '">' + esc(pad(p[1], 20)) + '</span>' + p[2] };
       }));
@@ -148,7 +164,7 @@
     date: function () { return [new Date().toString()]; },
     uptime: function () {
       var s = Math.floor((Date.now() - startTime) / 1000);
-      return ['up 10+ years (this session: ' + Math.floor(s / 60) + 'm ' + (s % 60) + 's), load average: 0.42, 0.37, 0.31'];
+      return ['up 13+ years (this session: ' + Math.floor(s / 60) + 'm ' + (s % 60) + 's), load average: 0.42, 0.37, 0.31'];
     },
     echo: function (a) { return [a.join(' ')]; },
     pwd: function () { return ['/home/andrei']; },
@@ -158,6 +174,20 @@
   };
   cmds.ll = function () { return cmds.ls(['-la']); };
   cmds.hire = cmds.contact;
+  cmds.experience = cmds.career = cmds.cv = function () {
+    var out = [c('$ git log --author="andrei" --career', C.muted), ''];
+    DATA.jobs.forEach(function (j, i) {
+      out.push({ html: '<span style="color:' + C.yellow + '">commit ' + ('0000000' + ((j[0] + j[3]).split('').reduce(function (h, ch) { return (h * 31 + ch.charCodeAt(0)) >>> 0; }, 7)).toString(16)).slice(-7) + '</span>' + (i === 0 ? ' (<span style="color:' + C.blue + '">HEAD -> main</span>)' : '') });
+      out.push({ html: 'Date:   ' + esc(j[0] + ' → ' + j[1]) });
+      out.push({ html: '    <b>' + esc(j[2]) + '</b> <span style="color:' + C.green + '">@ ' + esc(j[3]) + '</span>' });
+      out.push({ html: '    <span style="color:' + C.muted + '">' + esc(j[4]) + '</span>' });
+      out.push('');
+    });
+    return out;
+  };
+  cmds.certs = function () {
+    return [c('Certifications', C.blue), '  ✓ OpenHack: Containers — Microsoft OpenHack (Apr 2022)', '  ✓ AZ-900: Microsoft Azure Fundamentals exam prep — Udemy (Dec 2021)', '', c('Education: Alexandru Ioan Cuza University, Iași', C.muted)];
+  };
 
   // ---------- UI ----------
   var overlay = document.createElement('div');

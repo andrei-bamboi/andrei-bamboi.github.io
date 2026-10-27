@@ -489,7 +489,7 @@
     print([c('Cloud cost report — last 30 days', C.blue)].concat(table(['ACTION', 'RESOURCES', 'MONTHLY SAVINGS'], [
       ['Rightsize over-provisioned pods', '214 workloads', { t: '-$8,420', col: C.green }], ['Move stateless to Spot / Graviton', '3 node groups', { t: '-$6,950', col: C.green }],
       ['Delete orphaned EBS volumes & snapshots', '1,312', { t: '-$2,180', col: C.green }], ['S3 Intelligent-Tiering', '41 buckets', { t: '-$1,330', col: C.green }],
-      ['Stop "someone-forgot-this" c5.4xlarge', '1', { t: '-$497', col: C.green }]])).concat(['', h(b('Total: ') + g('−40% cloud spend') + m(' · performance impact: none'))]));
+      ['Stop "someone-forgot-this" c5.4xlarge', '1', { t: '-$497', col: C.green }]])).concat(['', h(b('Total: ') + g('≈ −$19.4k / month') + m(' (simulated report)'))]));
   });
   cmds.incident = cmds.oncall = wrap(async function () {
     await stream([
@@ -510,7 +510,6 @@
     await spin('Promoting read replica to primary (RPO < 5s)', 900);
     print([h(g('✓ Failover complete.') + ' RTO ' + rnd(41, 58) + 's · data loss: none · users: blissfully unaware'), c('Multi-cloud isn\'t a buzzword when it saves your weekend.', C.muted)]);
   });
-  cmds.certs = function () { return [c('Ask me about my certifications — 5 and counting. → run `contact`', C.muted)]; };
 
   // ---------- help for the tech playground ----------
   cmds.tech = cmds.devops = function () {
