@@ -6,6 +6,7 @@
     blue: 'hsl(212 100% 67%)', red: 'hsl(0 84% 60%)', yellow: 'hsl(45 90% 60%)'
   };
 
+  var T = window.Term = { subs: {}, aborted: false };
   var DATA = {
     name: 'Andrei Bamboi',
     role: 'DevOps & Cloud Architect',
@@ -71,6 +72,7 @@
       var list = [
         ['whoami', 'who is this guy?'], ['about', 'short bio'], ['skills', 'installed modules'],
         ['experience', 'career log (git log)'], ['projects', 'running processes'], ['certs', 'certifications'], ['contact', 'how to reach me'], ['neofetch', 'system info'],
+        ['tech', '★ DevOps playground: kubectl, terraform, deploy…'], ['k9s', '★ interactive project explorer'], ['send_message', '★ open the secure contact channel'],
         ['ls / cat <file>', 'browse the filesystem'], ['cd <section>', 'jump to a page section'],
         ['open github|linkedin|email', 'open a link'], ['kubectl get pods', 'check the cluster'],
         ['history', 'previous commands'], ['date · uptime · echo', 'the classics'],
@@ -216,15 +218,18 @@
   var PROMPT = '<span style="color:' + C.green + '">andrei</span><span style="color:' + C.blue + '">@cloud</span><span style="color:' + C.muted + '">:~</span><span style="color:' + C.green + '">$</span>';
   overlay.querySelector('[data-prompt]').innerHTML = PROMPT;
 
-  var hist = [], hIdx = 0, booted = false;
+  var hist = [], hIdx = 0, booted = false, busy = false;
+  var inputRow = input.parentNode;
 
   function print(lines) {
+    var last;
     lines.forEach(function (l) {
       var d = document.createElement('div');
       if (typeof l === 'object') d.innerHTML = l.html; else d.textContent = l === '' ? ' ' : l;
-      out.appendChild(d);
+      out.appendChild(d); last = d;
     });
     body.scrollTop = body.scrollHeight;
+    return last;
   }
 
   function run(raw) {
@@ -235,13 +240,19 @@
     var parts = line.split(/\s+/), name = parts[0].toLowerCase(), args = parts.slice(1);
     if (name.indexOf('./') === 0 && SECTIONS.indexOf(name.slice(2)) > -1) { print(cmds.cd([name.slice(2)])); return; }
     var fn = cmds[name];
-    print(fn ? fn(args) : [c(name + ': command not found. Type `help` to see what I can do.', C.red)]);
+    var res = fn ? fn(args) : [c(name + ': command not found. Type `help` (or `tech`) to see what I can do.', C.red)];
+    if (res && typeof res.then === 'function') {
+      busy = true; T.aborted = false; inputRow.style.visibility = 'hidden';
+      res.catch(function (e) { print([c(String(e), C.red)]); }).then(function () {
+        busy = false; inputRow.style.visibility = ''; input.focus(); body.scrollTop = body.scrollHeight;
+      });
+    } else if (res) print(res);
   }
 
   function complete() {
     var v = input.value, parts = v.split(' ');
     var pool = parts.length > 1
-      ? (parts[0] === 'cat' ? Object.keys(FS) : parts[0] === 'cd' ? SECTIONS : parts[0] === 'open' ? ['github', 'linkedin', 'email'] : [])
+      ? (parts[0] === 'cat' ? Object.keys(FS) : parts[0] === 'cd' ? SECTIONS : parts[0] === 'open' ? ['github', 'linkedin', 'email'] : (T.subs[parts[0]] || []).filter(function (x) { return x.split(' ').length === parts.length - 1; }).map(function (x) { return x.split(' ').pop(); }))
       : Object.keys(cmds);
     var last = parts[parts.length - 1];
     var m = pool.filter(function (x) { return x.indexOf(last) === 0; });
@@ -268,6 +279,7 @@
   function close() { overlay.style.display = 'none'; document.body.style.overflow = ''; }
 
   input.addEventListener('keydown', function (e) {
+    if (busy) { if (e.key === 'c' && e.ctrlKey) T.aborted = true; e.preventDefault(); return; }
     if (e.key === 'Enter') { run(input.value); input.value = ''; }
     else if (e.key === 'Tab') { e.preventDefault(); complete(); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); if (hIdx > 0) input.value = hist[--hIdx]; }
@@ -278,6 +290,7 @@
   body.addEventListener('click', function () { if (!window.getSelection().toString()) input.focus(); });
   overlay.addEventListener('click', function (e) { if (e.target === overlay || e.target.hasAttribute('data-close')) close(); });
   document.addEventListener('keydown', function (e) {
+    if (busy && overlay.style.display === 'flex' && e.key === 'c' && e.ctrlKey) { T.aborted = true; return; }
     var typing = /INPUT|TEXTAREA/.test(document.activeElement.tagName);
     if (e.key === 'Escape' && overlay.style.display === 'flex') close();
     else if (!typing && (e.key === '`' || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'))) { e.preventDefault(); open(); }
@@ -290,4 +303,5 @@
     logo.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); open(); }, true);
   }
   window.openTerminal = open;
+  T.cmds = cmds; T.print = print; T.c = c; T.esc = esc; T.pad = pad; T.C = C; T.PROMPT = PROMPT; T.FS = FS;
 })();
