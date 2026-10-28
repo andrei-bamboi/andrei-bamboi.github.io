@@ -9,7 +9,7 @@
   var T = window.Term = { subs: {}, aborted: false };
   var DATA = {
     name: 'Andrei Bamboi',
-    role: 'DevOps & Cloud Architect',
+    role: 'DevOps & Cloud Architect · Infrastructure Tech Lead',
     location: 'Iași, Romania',
     email: 'bamboi.andrei@gmail.com',
     links: { github: 'https://github.com/andrei-bamboi', linkedin: 'https://www.linkedin.com/in/andrei-bamboi-21223278/' },
@@ -35,20 +35,22 @@
         'Containerized a complex VM-native BI visualization tool into a microservices architecture.']
     ],
     jobs: [
-      ['2023-01', 'present', 'DevOps Engineer', 'ZeroBounce', 'Kubernetes, VMware, GitLab CI, Jenkins, Ansible, Cloudflare (DNS/WAF/Workers/Zero Trust), Grafana, Checkmk, Sentry'],
-      ['2022-05', '2023-01', 'Cloud Architect', 'Dydon AI', 'On-prem Kubernetes as code, GPU clusters on Ionos/Hetzner, ELK, Prometheus, GitHub Actions runners'],
+      ['2025', 'present', 'Infrastructure Tech Lead (cross-team)', 'ZeroBounce', 'Infra point of contact for other teams: requirements → plans, design & review, shared standards and runbooks'],
+      ['2023-01', 'present', 'DevOps Engineer', 'ZeroBounce', 'Hybrid VMware + Kubernetes, GitLab CI, Jenkins, Ansible, Cloudflare (DNS/WAF/Workers/Zero Trust/Tunnels), Grafana, Checkmk, Sentry'],
+      ['2022-05', '2023-01', 'Cloud Architect', 'Dydon AI', 'On-prem Kubernetes as code, GPU clusters on Ionos/Hetzner, GPU GitHub Actions runners, ELK, Prometheus'],
       ['2021-11', '2022-05', 'Infrastructure Engineer', 'Visma', 'AWS + Azure with Terraform, AWS→Azure migration, Azure AI Landing Zone, AKS runners, TeamCity, Octopus'],
-      ['2018-08', '2019-11', 'DevOps Engineer', 'Endava', 'GitLab CI + Kubernetes, OpenShift, Java/Spring APIs, BI tool → microservices'],
-      ['2018-03', '2018-08', 'DevOps', 'Levi9 Romania', 'Rancher/RKE, Helm, ArgoCD, GitHub Actions, Longhorn, Prometheus/Grafana'],
-      ['2016-01', '2018-03', 'System Administrator', 'Levi9 Romania', 'Servers & migrations, Cisco/MikroTik, SCOM, Backup Exec, AD DS, SCCM, 24/7 on-call'],
-      ['2013-08', '2016-01', 'IT Service Desk Analyst L2', 'SCC', 'Active Directory, Citrix, enterprise email, ITSM & SLAs']
+      ['2018-08', '2021-11', 'DevOps Engineer', 'Endava', 'GitLab CI + Kubernetes, OpenShift, Docker, AWS, Terraform, Jenkins, Splunk'],
+      ['2018-03', '2018-08', 'DevOps Engineer', 'Levi9 Romania', 'Rancher/RKE, Helm, ArgoCD, GitHub Actions, Longhorn, Prometheus/Grafana'],
+      ['2016-01', '2018-03', 'IT System Administrator', 'Levi9 Romania', 'Servers & migrations, Cisco/MikroTik, SCOM, Backup Exec, AD DS, SCCM, 24/7 on-call'],
+      ['2013-08', '2016-01', 'IT Service Desk Analyst (L2)', 'SCC Services Romania', 'Active Directory, Windows Server, Citrix, SCCM/SCOM, ITSM & SLAs']
     ]
   };
 
   var FS = {
     'experience.log': function () { return cmds.experience(); },
+    'education.txt': function () { return cmds.education(); },
     'about.txt': function () {
-      return [DATA.name + ' — ' + DATA.role, 'Location: ' + DATA.location, '13 years in IT · 8 in DevOps & IaC · 6 companies · AWS / Azure / GCP',
+      return [DATA.name + ' — ' + DATA.role, 'Location: ' + DATA.location, '13+ years in IT · 8+ in DevOps & IaC · 6 companies · AWS / Azure / VMware / Hetzner / Ionos',
         '', 'Multi-cloud platforms, Infrastructure as Code and zero-downtime delivery —', 'built by someone who started on 24/7 support and knows what breaks at 3 a.m.'];
     },
     'skills.yaml': function () { return cmds.skills(); },
@@ -71,7 +73,7 @@
     help: function () {
       var list = [
         ['whoami', 'who is this guy?'], ['about', 'short bio'], ['skills', 'installed modules'],
-        ['experience', 'career log (git log)'], ['projects', 'running processes'], ['certs', 'certifications'], ['contact', 'how to reach me'], ['neofetch', 'system info'],
+        ['experience', 'career log (git log)'], ['projects', 'running processes'], ['certs', 'certifications'], ['education', 'degrees & languages'], ['contact', 'how to reach me'], ['neofetch', 'system info'],
         ['tech', '★ DevOps playground: kubectl, terraform, deploy…'], ['k9s', '★ interactive project explorer'], ['send_message', '★ open the secure contact channel'],
         ['ls / cat <file>', 'browse the filesystem'], ['cd <section>', 'jump to a page section'],
         ['open github|linkedin|email', 'open a link'], ['kubectl get pods', 'check the cluster'],
@@ -188,8 +190,15 @@
     return out;
   };
   cmds.certs = function () {
-    return [c('Certifications', C.blue), '  ✓ OpenHack: Containers — Microsoft OpenHack (Apr 2022)', '  ✓ AZ-900: Microsoft Azure Fundamentals exam prep — Udemy (Dec 2021)', '', c('Education: Alexandru Ioan Cuza University, Iași', C.muted)];
+    return [c('Certifications', C.blue), '  ✓ Microsoft OpenHack: Containers (2022)', '  ✓ ITIL Foundation — APMG-International (2015)',
+      c('  coursework: AZ-900 Azure Fundamentals, MTA Networking & Security, CCNA ICND1, MS 70-640 AD', C.muted)];
   };
+  cmds.education = cmds.edu = function () {
+    return [c('Education — Alexandru Ioan Cuza University, Iași', C.blue), '  MSc, Accounting, Auditing & Expertise (2009–2011)', '  BSc, Accounting & IT Management (2005–2009)', '',
+      c('Languages', C.blue), '  English — advanced · French — beginner', '',
+      c('Before IT (2007–2013): warehouse manager, accountant, assistant manager, sales — logistics, accounting & team leadership.', C.muted)];
+  };
+
 
   // ---------- UI ----------
   var overlay = document.createElement('div');

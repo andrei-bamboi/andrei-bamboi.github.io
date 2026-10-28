@@ -3,6 +3,9 @@
 (function () {
   var GITHUB = 'https://github.com/andrei-bamboi';
   var PROJECTS = [
+    { pid: 2501, name: 'infra-tech-lead', title: 'Cross-team infrastructure enablement', org: 'ZeroBounce', from: '2025-01', to: null, tags: ['lead', 'k8s', 'cicd'],
+      stack: ['Kubernetes', 'CI/CD', 'Cloudflare Zero Trust', 'Monitoring', 'Templates & runbooks'],
+      notes: ['Go-to infrastructure contact for product and engineering teams: gather requirements, scope work, turn it into delivery plans.', "Design and review other teams' Kubernetes deployments, pipelines, Cloudflare edge/Zero Trust access and monitoring; guide the rollout.", 'Promote shared patterns, templates and runbooks; coordinate and prioritize cross-team requests.'] },
     { pid: 2301, name: 'cloudflare-zero-trust', title: 'Cloudflare Zero Trust', org: 'ZeroBounce', from: '2023-01', to: null, tags: ['edge', 'security'],
       stack: ['Cloudflare Access', 'Tunnels', 'Identity providers', 'App policies'],
       notes: ['Identity-based access to internal services instead of a traditional VPN.', 'Secure tunnels and per-application policies protect internal tools.'] },
@@ -42,17 +45,17 @@
     { pid: 2114, name: 'release-pipelines', title: 'Release pipelines', org: 'Visma', from: '2021-11', to: '2022-05', tags: ['cicd', 'iac'],
       stack: ['TeamCity', 'Octopus Deploy', 'Terraform'],
       notes: ['Streamlined release cycles across AWS and Azure environments.'] },
-    { pid: 1808, name: 'bi-tool-microservices', title: 'BI tool → microservices', org: 'Endava', from: '2018-08', to: '2019-11', tags: ['k8s'],
+    { pid: 1808, name: 'bi-tool-microservices', title: 'BI tool → microservices', org: 'Endava', from: '2018-08', to: '2021-11', tags: ['k8s'],
       stack: ['Docker', 'Kubernetes'],
       notes: ['Containerised a complex VM-native BI visualisation tool into microservices with a custom Docker strategy.'] },
-    { pid: 1809, name: 'openshift-java-cicd', title: 'CI/CD for Java/Spring on OpenShift', org: 'Endava', from: '2018-08', to: '2019-11', tags: ['cicd', 'k8s'],
-      stack: ['GitLab CI', 'OpenShift', 'Java/Spring'],
+    { pid: 1809, name: 'openshift-java-cicd', title: 'CI/CD for Java/Spring on OpenShift', org: 'Endava', from: '2018-08', to: '2021-11', tags: ['cicd', 'k8s'],
+      stack: ['GitLab CI', 'Jenkins', 'OpenShift', 'Java/Spring', 'Splunk'],
       notes: ['Fully automated pipelines with GitLab CI and Kubernetes, increasing deployment frequency.', 'Standardised service configs for compliance and performance.'] },
     { pid: 1803, name: 'rancher-gitops-platform', title: 'Rancher/RKE GitOps platform', org: 'Levi9', from: '2018-03', to: '2018-08', tags: ['k8s', 'cicd', 'obs'],
       stack: ['Rancher/RKE', 'Helm', 'ArgoCD', 'GitHub Actions', 'Longhorn', 'Prometheus', 'Grafana'],
       notes: ['Built and scaled dev & prod microservice clusters.', 'GitOps delivery with GitHub Actions, Helm and ArgoCD; Longhorn for persistent storage.'] }
   ];
-  var TAGS = [['all', 'all'], ['k8s', 'kubernetes'], ['cloud', 'cloud'], ['cicd', 'ci/cd'], ['iac', 'iac'], ['edge', 'edge'], ['security', 'security'], ['obs', 'observability']];
+  var TAGS = [['all', 'all'], ['lead', 'lead'], ['k8s', 'kubernetes'], ['cloud', 'cloud'], ['cicd', 'ci/cd'], ['iac', 'iac'], ['edge', 'edge'], ['security', 'security'], ['obs', 'observability']];
 
   var C = {
     bg: 'hsl(216 28% 7%)', card: 'hsl(215 21% 11%)', border: 'hsl(212 12% 21%)', sel: 'hsl(212 100% 67% / .16)',
@@ -159,7 +162,7 @@
     });
     var cur = body.querySelector('[data-i="' + state.sel + '"]');
     if (cur) cur.scrollIntoView({ block: 'nearest' });
-    foot.innerHTML = key('↑↓/jk', 'navigate') + key('enter', 'describe') + key('y', 'yaml') + key('/', 'filter') + key('0-7', 'tags') + key('esc', 'close') +
+    foot.innerHTML = key('↑↓/jk', 'navigate') + key('enter', 'describe') + key('y', 'yaml') + key('/', 'filter') + key('0-8', 'tags') + key('esc', 'close') +
       '<a href="' + GITHUB + '" target="_blank" rel="noopener" style="margin-left:auto;color:' + C.blue + '">github.com/andrei-bamboi ↗</a>';
   }
   function key(k, label) { return '<span><span style="color:' + C.blue + '">&lt;' + esc(k) + '&gt;</span> ' + esc(label) + '</span>'; }
@@ -229,7 +232,7 @@
     state.view = 'boot';
     renderHead(); renderTabs();
     body.innerHTML = '';
-    var lines = ['Connecting to context andrei@career…', 'Loading 13 years of history from git log…', 'Indexing ' + PROJECTS.length + ' projects across ' + Object.keys(PROJECTS.reduce(function (o, p) { o[p.org] = 1; return o; }, {})).length + ' orgs…'];
+    var lines = ['Connecting to context andrei@career…', 'Loading 13+ years of history from git log…', 'Indexing ' + PROJECTS.length + ' projects across ' + Object.keys(PROJECTS.reduce(function (o, p) { o[p.org] = 1; return o; }, {})).length + ' orgs…'];
     for (var i = 0; i < lines.length; i++) {
       var d = document.createElement('div'); d.style.padding = '0 14px'; body.appendChild(d);
       for (var f = 0; f < 5; f++) { if (state.view !== 'boot') return; d.innerHTML = sp('⠋⠙⠹⠸⠼'[f], C.blue) + ' ' + esc(lines[i]); await sleep(55); }
@@ -283,7 +286,7 @@
     else if (k === 'Enter' || k === 'd' || k === 'ArrowRight') { e.preventDefault(); describe(rows[state.sel]); }
     else if (k === 'y') yaml(rows[state.sel]);
     else if (k === '/') { e.preventDefault(); state.filtering = true; state.filter = ''; render(); }
-    else if (/^[0-7]$/.test(k)) { state.tag = TAGS[+k][0]; state.sel = 0; render(); }
+    else if (/^[0-8]$/.test(k)) { state.tag = TAGS[+k][0]; state.sel = 0; render(); }
   }, true);
   ov.addEventListener('click', function (e) { if (e.target === ov || e.target.hasAttribute('data-x')) close(); });
   window.addEventListener('resize', function () { if (ov.style.display === 'flex' && state.view === 'list') render(); });
